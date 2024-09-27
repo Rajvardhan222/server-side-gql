@@ -6,6 +6,7 @@ type Issue {
     content : String!
     userId : ID!
     projectId : ID
+    createdAt : String
     status : IssueStatus
     user : User!
 }
@@ -21,6 +22,14 @@ enum IssueStatus {
     TODO
     INPROGRESS
     BACKLOG
+}
+
+input editIssueInput {
+    name : String
+    content : String
+    status : IssueStatus
+    id : ID!
+
 }
 
 type User {
@@ -47,8 +56,9 @@ type Query{
 
 type Mutation {
     signin(input : AuthInput!) : User
-    signup(input : AuthInput!) : User
+    createUser(input : AuthInput!) : User
     createIssue(input : CreateIssueInput!) : Issue!
+    editIssue(input : editIssueInput!) : Issue!
 
 }
 `

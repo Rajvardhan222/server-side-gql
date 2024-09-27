@@ -66,7 +66,7 @@ export const resolvers = {
 
       return { ...data.user, token: data.token }
     },
-    signup: async (_, { input }) => {
+    createUser: async (_, { input }) => {
       const data = await signup(input)
       if (!data || !data.token || !data.user) {
         throw new GraphQLError('UNAUTHORIZED', {
@@ -96,6 +96,26 @@ export const resolvers = {
         .returning()
       return data[0]
     },
+
+    editIssue : async(_,{input},ctx) => {
+      if (!ctx.user) {
+        throw new GraphQLError('UNAUTHORIZED', {
+          extensions: {
+            code: 401,
+          },
+        })
+      }
+
+      const {id,...update} = input
+      const result = await db.update(issues).set(update ?? {})
+      .where(and(eq(issues.userId,ctx.user.id),eq(issues.id,id)))
+      .returning()
+
+      return result[0];
+
+
+
+    }
   },
   Issue: {
     user: (issue, _, ctx) => {
@@ -112,4 +132,11 @@ export const resolvers = {
       })
     },
   },
+  User : {
+    issues : (user,_,ctx) => {
+      return db.query.issues.findMany({
+        where : eq(issues.userId,user.id)
+      })
+    }
+  }
 }

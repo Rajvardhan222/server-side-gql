@@ -1,7 +1,7 @@
 import { gql } from 'urql'
 
 export const EditIssueIssueMutation = gql`
-  mutation EditIssue($input: EditIssueInput!) {
+  mutation EditIssue($input: editIssueInput!) {
     editIssue(input: $input) {
       createdAt
       id
